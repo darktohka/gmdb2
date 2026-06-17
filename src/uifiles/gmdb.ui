@@ -207,6 +207,16 @@
                         <signal name="activate" handler="gmdb_schema_new_cb" swapped="no"/>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="dump_menu">
+                        <property name="label">_Dump Database</property>
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="gmdb_dump_new_cb" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -322,6 +332,20 @@
                 <property name="tooltip_text" translatable="yes">Export schema definition</property>
                 <property name="stock_id">gtk-convert</property>
                 <signal name="clicked" handler="gmdb_schema_new_cb" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="dump_button">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Dump database schema and sample data</property>
+                <property name="stock_id">gtk-find</property>
+                <signal name="clicked" handler="gmdb_dump_new_cb" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

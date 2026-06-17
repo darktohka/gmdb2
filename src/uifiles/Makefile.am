@@ -9,6 +9,7 @@ ui_DATA =			\
 	gmdb-prefs.ui	\
 	gmdb-props.ui	\
 	gmdb-tabledef.ui	\
+	gmdb-dump.ui	\
 	../../COPYING
 
 EXTRA_DIST = $(ui_DATA) 

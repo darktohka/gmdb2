@@ -76,6 +76,10 @@ extern GtkWidget *gmdb_prefs_new(void);
 void gmdb_schema_new_cb(GtkWidget *w, gpointer data);
 void gmdb_schema_export_cb(GtkWidget *w, gpointer data);
 
+/* dump.c */
+void gmdb_dump_new_cb(GtkWidget *w, gpointer data);
+void gmdb_dump_refresh_cb(GtkWidget *w, gpointer data);
+
 /* table.c */
 void gmdb_table_debug_cb(GtkContainer *list, GtkWidget *w, gpointer data);
 void gmdb_table_export_cb(GtkContainer *list, GtkWidget *w, gpointer data);
