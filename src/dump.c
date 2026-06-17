@@ -182,7 +182,7 @@ gmdb_dump_new_cb(GtkWidget *w, gpointer data)
     GtkBuilder *xml;
     GtkWidget *win;
     GtkWidget *defs_text, *data_text;
-    PangoFontDescription *font_desc;
+    GtkCssProvider *css;
     GError *error = NULL;
 
     xml = gtk_builder_new();
@@ -201,12 +201,15 @@ gmdb_dump_new_cb(GtkWidget *w, gpointer data)
     g_signal_connect(GTK_WIDGET(gtk_builder_get_object(xml, "dump_refresh")), "clicked",
         G_CALLBACK(gmdb_dump_refresh_cb), xml);
 
-    font_desc = pango_font_description_from_string("Monospace");
+    css = gtk_css_provider_new();
+    gtk_css_provider_load_from_data(css, "textview { font-family: monospace; }", -1, NULL);
     defs_text = GTK_WIDGET(gtk_builder_get_object(xml, "dump_defs_text"));
-    gtk_widget_override_font(defs_text, font_desc);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(defs_text),
+        GTK_STYLE_PROVIDER(css), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     data_text = GTK_WIDGET(gtk_builder_get_object(xml, "dump_data_text"));
-    gtk_widget_override_font(data_text, font_desc);
-    pango_font_description_free(font_desc);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(data_text),
+        GTK_STYLE_PROVIDER(css), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(css);
 
     gtk_widget_show(win);
 
