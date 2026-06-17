@@ -4,20 +4,27 @@
 extern MdbHandle *mdb;
 
 static gchar *
-dump_table_definitions(void)
+dump_table_definitions(gboolean allow_comments)
 {
     FILE *tmp;
     char buf[4096];
     size_t nread;
     GString *result;
+    guint32 options;
 
     if (!mdb) return g_strdup("");
 
     tmp = tmpfile();
     if (!tmp) return g_strdup("");
 
+    options = MDB_SHEXP_DEFAULT;
+    if (allow_comments)
+        options |= MDB_SHEXP_COMMENTS;
+    else
+        options &= ~MDB_SHEXP_COMMENTS;
+
     mdb_set_default_backend(mdb, "access");
-    mdb_print_schema(mdb, tmp, NULL, NULL, MDB_SHEXP_DEFAULT);
+    mdb_print_schema(mdb, tmp, NULL, NULL, options);
     rewind(tmp);
 
     result = g_string_new("");
@@ -118,18 +125,20 @@ void
 gmdb_dump_refresh_cb(GtkWidget *w, gpointer data)
 {
     GtkBuilder *xml = GTK_BUILDER(data);
-    GtkWidget *defs_check, *data_check;
+    GtkWidget *defs_check, *data_check, *comments_check;
     GtkWidget *defs_text, *data_text;
     GtkWidget *defs_scroll, *data_scroll;
     GtkTextBuffer *buffer;
-    gboolean dump_defs, dump_data;
+    gboolean dump_defs, dump_data, allow_comments;
     int row_count;
     gchar *text;
 
     defs_check = GTK_WIDGET(gtk_builder_get_object(xml, "dump_defs_check"));
     data_check = GTK_WIDGET(gtk_builder_get_object(xml, "dump_data_check"));
+    comments_check = GTK_WIDGET(gtk_builder_get_object(xml, "dump_comments_check"));
     dump_defs = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(defs_check));
     dump_data = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data_check));
+    allow_comments = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(comments_check));
 
     row_count = (int)gtk_spin_button_get_value(
         GTK_SPIN_BUTTON(gtk_builder_get_object(xml, "dump_rowcount_spin")));
@@ -155,7 +164,7 @@ gmdb_dump_refresh_cb(GtkWidget *w, gpointer data)
     }
 
     if (dump_defs) {
-        text = dump_table_definitions();
+        text = dump_table_definitions(allow_comments);
         buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(defs_text));
         gtk_text_buffer_set_text(buffer, text, -1);
         g_free(text);
